@@ -1,53 +1,70 @@
 #include <iostream>
 #include <cstring>
 using namespace std;
-char* str(const char* stroka, const char* strCharSet) {
-    if (*strCharSet == '\0'){
-        return const_cast<char*>(stroka);
+bool esli (const char* stroka1, const char* stroka2){
+    for (; (*stroka1 != '\0') && (*stroka2 != '\0'); stroka1++, stroka2++){
+        if(*stroka1 != *stroka2){
+            return false;
+        }
     }
-    while (*stroka){
-        const char* start = stroka;
-        const char* pattern = strCharSet;
-        while (*stroka && *pattern && (*stroka == *pattern)) {
-            stroka++;
-            pattern++;
+    return true;
+}
+const char* str (const char* stroka1, const char* podstroka){
+    while(*stroka1 != '\0'){
+        if(esli (stroka1, podstroka)){
+        return stroka1;
         }
-        if (*pattern == '\0'){
-            return const_cast<char*>(start);
-        }
-        stroka = start + 1;
+        stroka1++;
     }
     return nullptr;
 }
-bool islatin(char ch){
-    return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
-}
-void countglasnyasoglasnya(const char* word, int& glasnya, int& soglasnya){
-    glasnya = 0;
-    soglasnya = 0;
+bool islatin(char* word){
+    if (!*word)
+        return false;
     while (*word) {
         char ch = *word;
-        if (islatin(ch)) {
-            ch = tolower(ch);
-            if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u'){
-                glasnya++;
-            } 
-            else{
-                soglasnya++;
-            }
+        if (!((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))){
+            return false;
         }
         word++;
     }
+    return true;
+}
+bool countglasnyasoglasnya (const char* word){
+    int glasnya = 0;
+    int soglasnya = 0;
+    while (*word) {
+        char ch = *word;
+        ch = tolower(ch);
+        if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u'){
+            glasnya++;
+        } 
+        else{
+            soglasnya++;
+        }
+        word++;
+    }
+    return ((glasnya == soglasnya) && (glasnya != 0));
+}
+char* slovo (char* input, char* word){
+    while(*input == ' ')
+        input++;
+    for(; (*input != ' ') && (*input != '\0'); input++, word++){
+        *word = *input;
+    }
+    *word = '\0';
+    return input;
 }
 int main(){
     //Часть а
-    char* stroka;
-    char* strCharSet;
+    const int MAX_LENGTH = 1000;
+    char stroka[MAX_LENGTH];
+    char strCharSet[MAX_LENGTH];
     cout << "Часть а)"<< endl << "Введите первую строку: ";
-    cin >> stroka;
+    cin.getline(stroka, MAX_LENGTH);
     cout << "Введите подстроку: ";
-    cin >> strCharSet;
-    char* result = str(stroka, strCharSet);
+    cin.getline(strCharSet, MAX_LENGTH);
+    const char* result = str(stroka, strCharSet);
     if (result != nullptr){
         cout << "Найдено: " << result << endl;
     }
@@ -55,42 +72,24 @@ int main(){
         cout << "Подстрока не найдена." << endl;
     }
     //Часть б
-    const int MAX_LENGTH = 300;
-    char input[MAX_LENGTH];
+    const int MA_LENGTH = 300;
+    char input[MA_LENGTH];
     cout << "Введите строку: ";
-    cin.getline(input, MAX_LENGTH);
+    cin.getline(input, MA_LENGTH);
     int totalwords = 0;
     int equalwords = 0;
-    char word[MAX_LENGTH];
-    int index = 0;
-    for (int i = 0; ; i++){
-        if (input[i] == ' ' || input[i] == '\0'){
-            if (index > 0){
-                word[index] = '\0';
-                index = 0;
-                bool isLatin = true;
-                for (char* ptr = word; *ptr; ptr++){
-                    if (islatin(*ptr) == 0){
-                        isLatin = false;
-                        break;
-                    }
-                }
-                if (isLatin){
-                    totalwords++;
-                    int glasnya, soglasnya;
-                    countglasnyasoglasnya(word, glasnya, soglasnya);
-                    if (glasnya == soglasnya){
-                        equalwords++;
-                    }
-                }
-            }
-            if (input[i] == '\0') 
-                break;
-        } 
-        else{
-            word[index++] = input[i];
-        }
+    char word[MA_LENGTH];
+    char* res = input;
+    *word = '\0';
+    do{
+        res = slovo (res, word);
+        if(islatin(word)){
+            totalwords ++; 
+            if (countglasnyasoglasnya(word))
+                equalwords ++;
+        }    
     }
+    while (*res);  
     cout << "Количество слов с латинскими символами: " << totalwords << endl;
     cout << "Количество слов с равным числом гласных и согласных: " << equalwords << endl;
     return 0;

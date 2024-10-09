@@ -60,7 +60,7 @@ int main(){
     const int MAX_LENGTH = 1000;
     char stroka[MAX_LENGTH];
     char strCharSet[MAX_LENGTH];
-    cout << "Часть а)"<< endl << "Введите первую строку: ";
+    cout << "Введите первую строку: ";
     cin.getline(stroka, MAX_LENGTH);
     cout << "Введите подстроку: ";
     cin.getline(strCharSet, MAX_LENGTH);

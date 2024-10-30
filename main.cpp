@@ -9,10 +9,20 @@ bool esli (const char* stroka1, const char* stroka2){
     }
     return true;
 }
+int lengthofstroka (const char* stroka){
+    int length = 0;
+    while (*stroka != '\0'){
+        stroka++;
+        length++;
+    }
+    return length;
+}
 const char* str (const char* stroka1, const char* podstroka){
     while(*stroka1 != '\0'){
         if(esli (stroka1, podstroka)){
-        return stroka1;
+            if (lengthofstroka(stroka1) >= lengthofstroka(podstroka)){
+                return stroka1;
+            }
         }
         stroka1++;
     }

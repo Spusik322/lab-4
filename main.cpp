@@ -2,7 +2,7 @@
 #include <cstring>
 using namespace std;
 bool esli (const char* stroka1, const char* stroka2){
-    for (; (*stroka1 != '\0') && (*stroka2 != '\0'); stroka1++, stroka2++){
+    for (; (*stroka1 != '\0') || (*stroka2 != '\0'); stroka1++, stroka2++){
         if(*stroka1 != *stroka2){
             return false;
         }
